@@ -5,6 +5,7 @@ import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:app/extensions/date_only_compare.dart';
 
 class CalendarView extends StatelessWidget {
   const CalendarView({Key? key}) : super(key: key);
@@ -50,7 +51,7 @@ class CalendarView extends StatelessWidget {
   CalendarBuilders _calendarBuilder(EventListLoadedState state) {
     return CalendarBuilders(
       defaultBuilder: ((context, day, focusedDay) {
-        if (focusedDay == day) {
+        if (day.isSameDate(focusedDay)) {
           return Container(
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.15),

@@ -1,8 +1,11 @@
+import 'package:app/data/event_type/event_type.dart';
 import 'package:app/data/events/day_event_model.dart';
 import 'package:app/data/events/events_repo.dart';
+import 'package:app/data/firebase/notification_repo.dart';
 import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
-import 'package:app/screens/event/sport_event/cubit/sport_detail_cubit.dart';
+import 'package:app/screens/event/sport_event/sport_cubit/sport_detail_cubit.dart';
+import 'package:app/services/firebase/push_notification_bloc/push_notification_bloc.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +30,7 @@ class SportEventDetailScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is SportDetailInitial) {
             context.read<SportDetailCubit>().loadEvent(arguments['id']);
-            return Container();
+            return LoadingScreen();
           } else if (state is SportDetailLoadingState) {
             return LoadingScreen();
           } else if (state is SportDetailErrorState) {
@@ -127,65 +130,58 @@ class SportEventDetailScreen extends StatelessWidget {
                   ],
                 ),
                 if (event.registrationLink != null)
-                  Container(
-                    padding: EdgeInsets.fromLTRB(
-                      w * 0.02,
-                      h * 0.015,
-                      w * 0.02,
-                      h * 0.015,
-                    ),
-                    decoration: BoxDecoration(
-                        color: ThemeColors.primaryBlue,
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20))),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            // onPressed: () => null,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: h * 0.01),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      FlutterRemix.ticket_line,
-                                      size: 20,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      "Prijava",
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.white),
-                                    )
-                                  ]),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: w * 0.025,
-                        ),
-                        GestureDetector(
+                Container(
+                  padding: EdgeInsets.fromLTRB(
+                    w * 0.02,
+                    h * 0.015,
+                    w * 0.02,
+                    h * 0.015,
+                  ),
+                  decoration: BoxDecoration(
+                      color: ThemeColors.primaryBlue,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20))),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          // onPressed: () => null,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: h * 0.01, horizontal: h * 0.04),
+                            padding: EdgeInsets.symmetric(vertical: h * 0.01),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    FlutterRemix.notification_2_line,
-                                    size: 22,
+                                    FlutterRemix.ticket_line,
+                                    size: 20,
                                     color: Colors.white,
                                   ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Prijava",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  )
                                 ]),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      // SizedBox(
+                      //   width: w * 0.025,
+                      // ),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(
+                      //       vertical: h * 0.01, horizontal: h * 0.04),
+                      //   child: _notificationButton(
+                      //     context,
+                      //     event,
+                      //   ),
+                      // ),
+                    ],
                   ),
+                ),
               ],
             ),
             SafeArea(
@@ -204,18 +200,60 @@ class SportEventDetailScreen extends StatelessWidget {
                     ),
                     if (event.registrationLink == null ||
                         event.registrationLink!.isEmpty)
-                      IconButton(
-                          onPressed: () => null,
-                          icon: Icon(
-                            FlutterRemix.notification_3_line,
-                            color: Colors.white,
-                          ))
+                      _notificationButton(context, event),
                   ],
                 ),
               ),
             ),
           ],
         ));
+  }
+
+//TODO naredi da bo delalo ok
+  Widget _notificationButton(
+    BuildContext context,
+    SportEvent event,
+  ) {
+    return BlocProvider(
+      create: (context) => PushNotificationBloc(NotificationRepo()),
+      child: BlocBuilder<PushNotificationBloc, PushNotificationState>(
+        builder: (context, state) {
+          if (state is PushNotificationInitial) {
+            context.read<PushNotificationBloc>().add(
+                  PushNotificationInitialLoadEvent(
+                    EventType.SPORT,
+                    event.id,
+                  ),
+                );
+          }
+
+          if (state is PushNotificationLoadedState) {
+            return IconButton(
+                onPressed: () {
+                  if (state.subscribed) {
+                    context.read<PushNotificationBloc>().add(
+                          PushNotificationUnsubscribeEvent(
+                              state.eventType, state.eventId),
+                        );
+                  } else {
+                    context.read<PushNotificationBloc>().add(
+                          PushNotificationSubscribeEvent(
+                              state.eventType, state.eventId),
+                        );
+                  }
+                },
+                icon: Icon(
+                  state.subscribed
+                      ? FlutterRemix.notification_2_line
+                      : FlutterRemix.notification_off_line,
+                  color: Colors.white,
+                ));
+          } else {
+            return Container();
+          }
+        },
+      ),
+    );
   }
 
   Widget _eventDataRow(

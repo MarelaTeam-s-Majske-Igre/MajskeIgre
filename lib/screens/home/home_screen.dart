@@ -94,7 +94,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     IconButton(
                       iconSize: 20,
-                      onPressed: () => Navigator.pushReplacementNamed(context, "/search"),
+                      onPressed: () =>
+                          Navigator.pushReplacementNamed(context, "/search"),
                       icon: Icon(
                         FlutterRemix.search_eye_line,
                         color: Colors.white.withOpacity(0.75),
@@ -199,18 +200,24 @@ class HomeScreen extends StatelessWidget {
       ),
     ];
 
-    eventCards.addAll(
-      EventCardListModel.fromRepo(todaysEvents).events.map(
-            (e) => _eventCard(context,
-                w: w,
-                h: h,
-                title: e.title,
-                type: e.type,
-                date: e.startTime,
-                background: e.imageUrl,
-                onClick: () => e.onClick(context)),
-          ),
-    );
+    eventCards.addAll(EventCardListModel.fromRepo(todaysEvents)
+        .events
+        .map(
+          (e) => _eventCard(context,
+              w: w,
+              h: h,
+              title: e.title,
+              type: e.type,
+              date: e.startTime,
+              background: e.imageUrl,
+              onClick: () => e.onClick(context)),
+        )
+        .toList());
+
+    // +1 Padding is first element
+    if (eventCards.length > (5 + 1)) {
+      eventCards = eventCards.sublist(0, 5 + 1);
+    }
 
     return eventCards;
   }

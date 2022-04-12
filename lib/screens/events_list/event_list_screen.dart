@@ -106,7 +106,7 @@ class EventListScreen extends StatelessWidget {
       return date.isSameDate(DateTime(
         element.date!.year,
         element.date!.month,
-        element.date!.day + 1,
+        element.date!.day,
       ));
     }
 
@@ -160,7 +160,7 @@ class EventListScreen extends StatelessWidget {
                 .format(DateTime(
                   day.date!.year,
                   day.date!.month,
-                  day.date!.day +1,
+                  day.date!.day,
                 ))
                 .capitalize(),
             style: TextStyle(color: Colors.white.withOpacity(0.8)),
@@ -176,8 +176,11 @@ class EventListScreen extends StatelessWidget {
             time: e.startTime,
             eventType: e.type,
             onClick: () => e.onClick(context),
-          )),
+          ))
+          .toList()
+        ,
     );
+
 
     return widgets;
   }

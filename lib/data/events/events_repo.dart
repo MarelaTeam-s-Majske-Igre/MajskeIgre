@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/data/events/day_event_model.dart';
-import 'package:app/data/firebase/fcm_repo.dart';
+import 'package:app/data/firebase/notification_repo.dart';
 import 'package:app/data/interceptors/fcm_token_interceptor.dart';
 import 'package:app/data/repo_consts.dart';
 import 'package:http_interceptor/http/http.dart';

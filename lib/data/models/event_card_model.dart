@@ -33,12 +33,7 @@ class EventCardListModel {
             )));
       }
 
-      ev.sort((a, b) {
-        if (a.startTime != null && b.startTime != null) {
-          return a.startTime.compareTo(b.startTime);
-        }
-        return 1;
-      });
+      // ev = ev..sort((a, b) => a.startTime.compareTo(b.startTime));
 
       if (day.concertTitle != null) {
         ev.add(EventCardModel(
@@ -51,7 +46,13 @@ class EventCardListModel {
       }
     }
 
-    events = ev;
+    events = _sort(ev);
+  }
+
+  List<EventCardModel> _sort(List<EventCardModel> events) {
+    events = events;
+    events.sort((a, b) => a.startTime.compareTo(b.startTime));
+    return events;
   }
 }
 

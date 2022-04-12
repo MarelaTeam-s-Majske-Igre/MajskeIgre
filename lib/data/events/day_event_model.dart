@@ -36,7 +36,9 @@ class DayEventModel {
   }
 }
 
-class SportEvent {
+abstract class ApiEvent {}
+
+class SportEvent extends ApiEvent {
   SportEvent({
     required this.id,
     required this.title,
@@ -73,7 +75,7 @@ class SportEvent {
   }
 }
 
-class CultureEvent {
+class CultureEvent extends ApiEvent {
   CultureEvent({
     required this.id,
     required this.title,
@@ -96,7 +98,7 @@ class CultureEvent {
   }
 }
 
-class ConcertEvent {
+class ConcertEvent extends ApiEvent {
   ConcertEvent({
     required this.concertName,
     required this.concertLocation,
