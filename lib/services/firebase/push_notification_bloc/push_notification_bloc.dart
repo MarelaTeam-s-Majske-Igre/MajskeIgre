@@ -42,57 +42,45 @@ class PushNotificationBloc
   _onEventSubscribe(PushNotificationSubscribeEvent event, Emitter emit) async {
     emit(PushNotificationLoadingState());
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(_generateKey(event)) ?? false) {
-      emit(PushNotificationLoadedState(
-        event.type,
-        event.eventId,
-        true,
-      ));
-    } else {
-      if (event.type == EventType.SPORT) {
-        final apiSuccess =
-            await notificationRepo.subscribeToSportNotification(event.eventId);
-        if (apiSuccess) {
-          emit(PushNotificationLoadedState(
-            event.type,
-            event.eventId,
-            true,
-          ));
-          prefs.setBool(_generateKey(event), true);
-          ScaffoldMessenger.of(NavigationService.navigatorKey.currentContext!)
-              .showSnackBar(
-            SnackBar(
-              backgroundColor: ThemeColors.primaryBlue,
-              content: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: 80),
-                  child: Text("Prijava na dogodek je bila uspešna")),
-            ),
-          );
-        } else {
-          emit(PushNotificationErrorState(
-            "Napaka pri shranjevanju, poskusite ponovno kasneje",
-            event.type,
-            event.eventId,
-            true,
-          ));
-        }
-      } else if (event.type == EventType.CULTURE) {
-        final apiSuccess = await notificationRepo
-            .subscribeToCultureNotification(event.eventId);
-        if (apiSuccess) {
-          emit(PushNotificationLoadedState(
-            event.type,
-            event.eventId,
-            true,
-          ));
-        } else {
-          emit(PushNotificationErrorState(
-            "Napaka pri shranjevanju, poskusite ponovno kasneje",
-            event.type,
-            event.eventId,
-            true,
-          ));
-        }
+
+    if (event.type == EventType.SPORT) {
+      final apiSuccess =
+          await notificationRepo.subscribeToSportNotification(event.eventId);
+      if (apiSuccess) {
+        _showSnackbar("Prijava na dogodek je bila uspešna");
+        emit(PushNotificationLoadedState(
+          event.type,
+          event.eventId,
+          true,
+        ));
+        prefs.setBool(_generateKey(event), true);
+      } else {
+        _showSnackbar("Napaka, poskusite ponovno kasneje");
+        emit(PushNotificationErrorState(
+          "Napaka pri shranjevanju, poskusite ponovno kasneje",
+          event.type,
+          event.eventId,
+          false,
+        ));
+      }
+    } else if (event.type == EventType.CULTURE) {
+      final apiSuccess =
+          await notificationRepo.subscribeToCultureNotification(event.eventId);
+      if (apiSuccess) {
+        _showSnackbar("Prijava na dogodek je bila uspešna");
+        emit(PushNotificationLoadedState(
+          event.type,
+          event.eventId,
+          true,
+        ));
+      } else {
+        _showSnackbar("Napaka, poskusite ponovno kasneje");
+        emit(PushNotificationErrorState(
+          "Napaka pri shranjevanju, poskusite ponovno kasneje",
+          event.type,
+          event.eventId,
+          false,
+        ));
       }
     }
   }
@@ -101,49 +89,91 @@ class PushNotificationBloc
       PushNotificationUnsubscribeEvent event, Emitter emit) async {
     emit(PushNotificationLoadingState());
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(_generateKey(event)) ?? false) {
-      emit(PushNotificationLoadedState(
-        event.type,
-        event.eventId,
-        false,
-      ));
-    } else {
-      if (event.type == EventType.SPORT) {
-        final apiSuccess = await notificationRepo
-            .unsubscribeToSportNotification(event.eventId);
-        if (apiSuccess) {
-          emit(PushNotificationLoadedState(
-            event.type,
-            event.eventId,
-            false,
-          ));
-          prefs.setBool(_generateKey(event), false);
-        } else {
-          emit(PushNotificationErrorState(
-            "Napaka pri shranjevanju, poskusite ponovno kasneje",
-            event.type,
-            event.eventId,
-            false,
-          ));
-        }
-      } else if (event.type == EventType.CULTURE) {
-        final apiSuccess = await notificationRepo
-            .unsubscribeToCultureNotification(event.eventId);
-        if (apiSuccess) {
-          emit(PushNotificationLoadedState(
-            event.type,
-            event.eventId,
-            false,
-          ));
-        } else {
-          emit(PushNotificationErrorState(
-            "Napaka pri shranjevanju, poskusite ponovno kasneje",
-            event.type,
-            event.eventId,
-            false,
-          ));
-        }
+    if (event.type == EventType.SPORT) {
+      final apiSuccess =
+          await notificationRepo.unsubscribeToSportNotification(event.eventId);
+      if (apiSuccess) {
+        _showSnackbar("Odjava uspešna, o dogodku ne boste obveščeni");
+        emit(PushNotificationLoadedState(
+          event.type,
+          event.eventId,
+          false,
+        ));
+        prefs.setBool(_generateKey(event), false);
+      } else {
+        _showSnackbar("Napaka, poskusite ponovno kasneje");
+        emit(PushNotificationErrorState(
+          "Napaka pri shranjevanju, poskusite ponovno kasneje",
+          event.type,
+          event.eventId,
+          false,
+        ));
+      }
+    } else if (event.type == EventType.CULTURE) {
+      final apiSuccess = await notificationRepo
+          .unsubscribeToCultureNotification(event.eventId);
+      if (apiSuccess) {
+        _showSnackbar("Odjava uspešna, o dogodku ne boste obveščeni");
+        emit(PushNotificationLoadedState(
+          event.type,
+          event.eventId,
+          false,
+        ));
+      } else {
+        _showSnackbar("Napaka, poskusite ponovno kasneje");
+        emit(PushNotificationErrorState(
+          "Napaka pri shranjevanju, poskusite ponovno kasneje",
+          event.type,
+          event.eventId,
+          false,
+        ));
       }
     }
+  }
+
+  _showSnackbar(String text) {
+    var context = NavigationService.navigatorKey.currentContext!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: ThemeColors.primaryBlue.withOpacity(0.75),
+        content: Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height *0.35),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: ElevatedButton(
+                          onPressed: () =>
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                          child: Text(
+                            "Zapri",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style:
+                              ElevatedButton.styleFrom(primary: ThemeColors.purple),
+                        )),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

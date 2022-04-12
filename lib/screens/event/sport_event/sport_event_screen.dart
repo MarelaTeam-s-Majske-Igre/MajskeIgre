@@ -130,58 +130,58 @@ class SportEventDetailScreen extends StatelessWidget {
                   ],
                 ),
                 if (event.registrationLink != null)
-                Container(
-                  padding: EdgeInsets.fromLTRB(
-                    w * 0.02,
-                    h * 0.015,
-                    w * 0.02,
-                    h * 0.015,
-                  ),
-                  decoration: BoxDecoration(
-                      color: ThemeColors.primaryBlue,
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20))),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          // onPressed: () => null,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: h * 0.01),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    FlutterRemix.ticket_line,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Prijava",
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.white),
-                                  )
-                                ]),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(
+                      w * 0.02,
+                      h * 0.015,
+                      w * 0.02,
+                      h * 0.015,
+                    ),
+                    decoration: BoxDecoration(
+                        color: ThemeColors.primaryBlue,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20))),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            // onPressed: () => null,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: h * 0.01),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      FlutterRemix.ticket_line,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Prijava",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    )
+                                  ]),
+                            ),
                           ),
                         ),
-                      ),
-                      // SizedBox(
-                      //   width: w * 0.025,
-                      // ),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(
-                      //       vertical: h * 0.01, horizontal: h * 0.04),
-                      //   child: _notificationButton(
-                      //     context,
-                      //     event,
-                      //   ),
-                      // ),
-                    ],
+                        // SizedBox(
+                        //   width: w * 0.025,
+                        // ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(
+                        //       vertical: h * 0.01, horizontal: h * 0.04),
+                        //   child: _notificationButton(
+                        //     context,
+                        //     event,
+                        //   ),
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
             SafeArea(
@@ -209,7 +209,6 @@ class SportEventDetailScreen extends StatelessWidget {
         ));
   }
 
-//TODO naredi da bo delalo ok
   Widget _notificationButton(
     BuildContext context,
     SportEvent event,
@@ -233,23 +232,33 @@ class SportEventDetailScreen extends StatelessWidget {
                   if (state.subscribed) {
                     context.read<PushNotificationBloc>().add(
                           PushNotificationUnsubscribeEvent(
-                              state.eventType, state.eventId),
+                            state.eventType,
+                            state.eventId,
+                          ),
                         );
                   } else {
                     context.read<PushNotificationBloc>().add(
                           PushNotificationSubscribeEvent(
-                              state.eventType, state.eventId),
+                            state.eventType,
+                            state.eventId,
+                          ),
                         );
                   }
                 },
                 icon: Icon(
-                  state.subscribed
-                      ? FlutterRemix.notification_2_line
+                  !state.subscribed
+                      ? FlutterRemix.notification_4_line
                       : FlutterRemix.notification_off_line,
                   color: Colors.white,
                 ));
           } else {
-            return Container();
+            return IconButton(
+              icon: Icon(
+                FlutterRemix.a_b,
+                color: Colors.transparent,
+              ),
+              onPressed: () => null,
+            );
           }
         },
       ),

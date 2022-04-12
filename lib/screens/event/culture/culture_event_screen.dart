@@ -1,8 +1,11 @@
+import 'package:app/data/event_type/event_type.dart';
 import 'package:app/data/events/day_event_model.dart';
 import 'package:app/data/events/events_repo.dart';
+import 'package:app/data/firebase/notification_repo.dart';
 import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/event/culture/cubit/culture_detail_cubit.dart';
+import 'package:app/services/firebase/push_notification_bloc/push_notification_bloc.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,18 +104,69 @@ class CultureEventDetailScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    IconButton(
-                        onPressed: () => null,
-                        icon: Icon(
-                          FlutterRemix.notification_3_line,
-                          color: Colors.white,
-                        ))
+                    _notificationButton(context, event)
                   ],
                 ),
               ),
             ),
           ],
         ));
+  }
+
+  Widget _notificationButton(
+    BuildContext context,
+    CultureEvent event,
+  ) {
+    return BlocProvider(
+      create: (context) => PushNotificationBloc(NotificationRepo()),
+      child: BlocBuilder<PushNotificationBloc, PushNotificationState>(
+        builder: (context, state) {
+          if (state is PushNotificationInitial) {
+            context.read<PushNotificationBloc>().add(
+                  PushNotificationInitialLoadEvent(
+                    EventType.CULTURE,
+                    event.id,
+                  ),
+                );
+          }
+
+          if (state is PushNotificationLoadedState) {
+            return IconButton(
+                onPressed: () {
+                  if (state.subscribed) {
+                    context.read<PushNotificationBloc>().add(
+                          PushNotificationUnsubscribeEvent(
+                            state.eventType,
+                            state.eventId,
+                          ),
+                        );
+                  } else {
+                    context.read<PushNotificationBloc>().add(
+                          PushNotificationSubscribeEvent(
+                            state.eventType,
+                            state.eventId,
+                          ),
+                        );
+                  }
+                },
+                icon: Icon(
+                  !state.subscribed
+                      ? FlutterRemix.notification_4_line
+                      : FlutterRemix.notification_off_line,
+                  color: Colors.white,
+                ));
+          } else {
+            return IconButton(
+              icon: Icon(
+                FlutterRemix.a_b,
+                color: Colors.transparent,
+              ),
+              onPressed: () => null,
+            );
+          }
+        },
+      ),
+    );
   }
 
   Widget _header(CultureEvent event, double h, double w) {
