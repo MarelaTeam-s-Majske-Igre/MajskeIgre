@@ -13,6 +13,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:intl/intl.dart';
 import 'package:app/extensions/capitalize.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CultureEventDetailScreen extends StatelessWidget {
   const CultureEventDetailScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class CultureEventDetailScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is CultureDetailInitial) {
             context.read<CultureDetailCubit>().loadEvent(arguments['id']);
-            return Container();
+            return LoadingScreen();
           } else if (state is CultureDetailLoadingState) {
             return LoadingScreen();
           } else if (state is CultureDetailErrorState) {
@@ -74,14 +75,19 @@ class CultureEventDetailScreen extends StatelessWidget {
                           Row(
                             children: [
                               Flexible(
-                                child: Html(data: p, style: {
-                                  "body": Style.fromTextStyle(
-                                    TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                  )
-                                }),
+                                child: Html(
+                                  data: p,
+                                  onLinkTap: (url, _, __, ___) =>
+                                      url != null ? launch(url) : null,
+                                  style: {
+                                    "body": Style.fromTextStyle(
+                                      TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                    )
+                                  },
+                                ),
                               )
                             ],
                           )

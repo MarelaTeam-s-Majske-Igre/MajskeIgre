@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:app/data/interceptors/fcm_token_interceptor.dart';
 import 'package:app/data/repo_consts.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart';
 import 'package:http_interceptor/http/http.dart';
 
 class NotificationRepo {
@@ -48,10 +50,19 @@ class NotificationRepo {
       'Content-type': 'application/json',
     };
 
-    final response = await client.post(
+    var response = await client.post(
       Uri.parse(baseUrl + "notifications/sport?eventId=$eventId"),
       headers: headers,
     );
+
+    while (response.statusCode == 308) {
+      if (response.headers.containsKey("location")) {
+        response = await client.post(
+          Uri.parse(response.headers["location"]!),
+          headers: headers,
+        );
+      }
+    }
 
     if (response.statusCode == 200) {
       return true;
@@ -65,10 +76,19 @@ class NotificationRepo {
       'Content-type': 'application/json',
     };
 
-    final response = await client.post(
+    var response = await client.post(
       Uri.parse(baseUrl + "notifications/culture?eventId=$eventId"),
       headers: headers,
     );
+
+    while (response.statusCode == 308) {
+      if (response.headers.containsKey("location")) {
+        response = await client.post(
+          Uri.parse(response.headers["location"]!),
+          headers: headers,
+        );
+      }
+    }
 
     if (response.statusCode == 200) {
       return true;
@@ -82,10 +102,19 @@ class NotificationRepo {
       'Content-type': 'application/json',
     };
 
-    final response = await client.delete(
+    var response = await client.delete(
       Uri.parse(baseUrl + "notifications/sport?eventId=$eventId"),
       headers: headers,
     );
+
+    while (response.statusCode == 308) {
+      if (response.headers.containsKey("location")) {
+        response = await client.delete(
+          Uri.parse(response.headers["location"]!),
+          headers: headers,
+        );
+      }
+    }
 
     if (response.statusCode == 204) {
       return true;
@@ -99,10 +128,18 @@ class NotificationRepo {
       'Content-type': 'application/json',
     };
 
-    final response = await client.delete(
+    var response = await client.delete(
       Uri.parse(baseUrl + "notifications/culture?eventId=$eventId"),
       headers: headers,
     );
+
+    while (response.statusCode == 308) {
+      if (response.headers.containsKey("location")) {
+        response = await client.delete(Uri.parse(response.headers["location"]!),
+            headers: headers);
+        response = response;
+      }
+    }
 
     if (response.statusCode == 204) {
       return true;

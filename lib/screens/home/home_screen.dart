@@ -137,46 +137,77 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: CustomScrollView(
-                        physics: BouncingScrollPhysics(),
-                        slivers: [
-                          for (var card in _cardListView(context, state, h, w))
-                            SliverPadding(
-                              padding: EdgeInsets.only(top: h * 0.01),
-                              sliver: SliverToBoxAdapter(child: card),
+                    if (state.events.isEmpty)
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: h *0.2),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: w * 0.05),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: h * 0.05),
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                        maxWidth: w * 0.75, maxHeight: h * 0.35),
+                                    child: Image.asset(
+                                      "assets/img/ROKCE-01.png",
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "Trenutno ni napovednih prihajajočih dogodkov",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: ThemeColors.primaryBlue, fontSize: 16),
+                                )
+                              ],
                             ),
-                          // SliverToBoxAdapter(
-                          //   child: TextButton(
-                          //       onPressed: () =>
-                          //           Navigator.of(context).pushNamed("/events"),
-                          //       child: Row(
-                          //         mainAxisAlignment: MainAxisAlignment.end,
-                          //         children: [
-                          //           Text(
-                          //             "Pokaži več",
-                          //             style: TextStyle(
-                          //                 color: Colors.white,
-                          //                 fontSize: 14,
-                          //                 fontWeight: FontWeight.w600),
-                          //           ),
-                          //           SizedBox(
-                          //             width: 5,
-                          //           ),
-                          //           Icon(
-                          //             FlutterRemix.arrow_right_line,
-                          //             color: Colors.white,
-                          //             size: 20,
-                          //           )
-                          //         ],
-                          //       )),
-                          // ),
-                          SliverToBoxAdapter(
-                            child: SizedBox(height: 30),
-                          )
-                        ],
+                          ),
+                        ),
                       ),
-                    ),
+                    if (state.events.isNotEmpty)
+                      Expanded(
+                        child: CustomScrollView(
+                          physics: BouncingScrollPhysics(),
+                          slivers: [
+                            for (var card
+                                in _cardListView(context, state, h, w))
+                              SliverPadding(
+                                padding: EdgeInsets.only(top: h * 0.01),
+                                sliver: SliverToBoxAdapter(child: card),
+                              ),
+                            // SliverToBoxAdapter(
+                            //   child: TextButton(
+                            //       onPressed: () =>
+                            //           Navigator.of(context).pushNamed("/events"),
+                            //       child: Row(
+                            //         mainAxisAlignment: MainAxisAlignment.end,
+                            //         children: [
+                            //           Text(
+                            //             "Pokaži več",
+                            //             style: TextStyle(
+                            //                 color: Colors.white,
+                            //                 fontSize: 14,
+                            //                 fontWeight: FontWeight.w600),
+                            //           ),
+                            //           SizedBox(
+                            //             width: 5,
+                            //           ),
+                            //           Icon(
+                            //             FlutterRemix.arrow_right_line,
+                            //             color: Colors.white,
+                            //             size: 20,
+                            //           )
+                            //         ],
+                            //       )),
+                            // ),
+                            SliverToBoxAdapter(
+                              child: SizedBox(height: 30),
+                            )
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SportEventDetailScreen extends StatelessWidget {
   const SportEventDetailScreen({Key? key}) : super(key: key);
@@ -109,14 +110,19 @@ class SportEventDetailScreen extends StatelessWidget {
                               Row(
                                 children: [
                                   Flexible(
-                                    child: Html(data: p, style: {
-                                      "body": Style.fromTextStyle(
-                                        TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      )
-                                    }),
+                                    child: Html(
+                                      data: p,
+                                      onLinkTap: (url, _, __, ___) =>
+                                          url != null ? launch(url) : null,
+                                      style: {
+                                        "body": Style.fromTextStyle(
+                                          TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          ),
+                                        )
+                                      },
+                                    ),
                                   )
                                 ],
                               ),
@@ -145,7 +151,7 @@ class SportEventDetailScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            // onPressed: () => null,
+                            onTap: () => launch(event.registrationLink!),
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: h * 0.01),
                               child: Row(
