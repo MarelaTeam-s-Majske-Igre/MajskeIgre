@@ -174,17 +174,6 @@ class SportEventDetailScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // SizedBox(
-                        //   width: w * 0.025,
-                        // ),
-                        // Padding(
-                        //   padding: EdgeInsets.symmetric(
-                        //       vertical: h * 0.01, horizontal: h * 0.04),
-                        //   child: _notificationButton(
-                        //     context,
-                        //     event,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -204,9 +193,7 @@ class SportEventDetailScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    if (event.registrationLink == null ||
-                        event.registrationLink!.isEmpty)
-                      _notificationButton(context, event),
+                    _notificationButton(context, event),
                   ],
                 ),
               ),
