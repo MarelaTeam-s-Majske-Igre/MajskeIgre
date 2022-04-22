@@ -1,4 +1,5 @@
 import 'package:app/data/firebase/notification_repo.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http_interceptor/http/http.dart';
@@ -23,7 +24,7 @@ class FcmTokenInterceptor implements InterceptorContract {
     return data;
   }
 
-  Future<String?> _getFcmToken() async {
+  static Future<String?> _getFcmToken() async {
     await Firebase.initializeApp();
     var _messaging = FirebaseMessaging.instance;
     return await _messaging.getToken();

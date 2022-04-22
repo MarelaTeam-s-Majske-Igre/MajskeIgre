@@ -4,7 +4,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatelessWidget {
   final bool withScaffold;
-  const LoadingScreen({Key? key, this.withScaffold = true}) : super(key: key);
+  final String loadingText;
+  const LoadingScreen({
+    Key? key,
+    this.withScaffold = true,
+    this.loadingText = "Nalaganje vsebine",
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class LoadingScreen extends StatelessWidget {
         Image.asset("assets/img/logo_big.png"),
         SpinKitSpinningLines(color: Colors.white),
         Text(
-          "Nalaganje vsebine",
+          loadingText,
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         Container(),

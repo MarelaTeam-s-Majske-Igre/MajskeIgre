@@ -29,7 +29,7 @@ class EventListScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is EventListInitial) {
             context.read<EventListCubit>().loadData();
-            return Container();
+            return LoadingScreen();
           } else if (state is EventListLoadingState) {
             return LoadingScreen();
           } else if (state is EventListErrorState) {

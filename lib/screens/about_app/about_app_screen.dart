@@ -1,6 +1,7 @@
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutAppScreen extends StatelessWidget {
   const AboutAppScreen({Key? key}) : super(key: key);
@@ -38,7 +39,7 @@ class AboutAppScreen extends StatelessWidget {
               h,
               title: "Pravno obvestilo",
               body: Text(
-                """Vse besedilo, slike in grafike uporabljeni v aplikaciji so last organizatorja prireditve Majskih iger. Razvijalec MarelaTeam si ne pridružuje nobenih pravic do uporabe.
+                """Vse besedilo, slike in grafike uporabljeni v aplikaciji so last organizatorja prireditve Majskih iger. Razvijalec si ne pridružuje nobenih pravic do uporabe.
 
 Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
         """,
@@ -49,33 +50,73 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
             _boxContainer(
               w,
               h,
-              title: "Razvijalec",
+              // title: "Razvijalec",
               background: ThemeColors.greenSport,
               stickyLeft: false,
               body: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    "Marela Team",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "Team",
+                        "Jakob Marušič",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
                       ),
-                      SizedBox(
-                        height: 20,
+                      Container(
+                        height: 1,
+                        color: Colors.white,
+                        width: w * 0.45,
+                      ),
+                      // Text(
+                      //   "jakob.marusic@student.uni-lj.si",
+                      //   style: TextStyle(
+                      //       fontStyle: FontStyle.italic,
+                      //       color: Colors.white,
+                      //       fontSize: 12),
+                      // ),
+                      Row(
+                        children: [
+                          IconButton(
+                              onPressed: () =>
+                                  launch("https://jakob.marela.team"),
+                              icon: Icon(
+                                FlutterRemix.home_2_fill,
+                                color: Colors.white,
+                              )),
+                          IconButton(
+                              onPressed: () => launch(
+                                  "mailto:jakob.marusic@student.uni-lj.si"),
+                              icon: Icon(
+                                FlutterRemix.message_2_fill,
+                                color: Colors.white,
+                              )),
+                          IconButton(
+                              onPressed: () =>
+                                  launch("https://github.com/jakmar17"),
+                              icon: Icon(
+                                FlutterRemix.github_fill,
+                                color: Colors.white,
+                              )),
+                        ],
                       )
                     ],
+                  ),
+                  SizedBox(
+                    width: w * 0.05,
+                  ),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: h * 0.15),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          // color: ThemeColors.sportBackground.withOpacity(0.65),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Image.network(
+                          "https://avatars.githubusercontent.com/u/34716555?s=400&u=46b5cbdfb3e2900b237d62fecdce1648c18062db&v=4"),
+                    ),
                   )
                 ],
               ),
@@ -83,34 +124,50 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
             _boxContainer(
               w,
               h,
-              title: "MajŠtudent",
+              title: "MojŠtudent",
               background: ThemeColors.orangeCulture,
-              body: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Marela Team",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Team",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
+              body: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Mobilna aplikacija za dostop do storitve Mojega študenta, namenjena stanovalcem Študentskega doma Ljubljana",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
                       ),
-                      SizedBox(
-                        height: 20,
-                      )
-                    ],
-                  )
-                ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Container(
+                        color: Colors.white,
+                        width: w,
+                        height: 1,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => launch(
+                              "https://play.google.com/store/apps/details?id=team.marela.mojstudent.moj_student"),
+                          icon: Icon(
+                            FlutterRemix.google_play_fill,
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              launch("https://mojstudent.marela.team"),
+                          icon: Icon(
+                            FlutterRemix.home_2_fill,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -120,7 +177,7 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
   SliverToBoxAdapter _boxContainer(
     double w,
     double h, {
-    required String title,
+    String? title,
     required Widget body,
     Color? background,
     bool stickyLeft = true,
@@ -151,7 +208,7 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      title ?? '',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

@@ -80,12 +80,12 @@ class FunEventDetailScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    IconButton(
-                        onPressed: () => null,
-                        icon: Icon(
-                          FlutterRemix.notification_3_line,
-                          color: Colors.white,
-                        ))
+                    // IconButton(
+                    //     onPressed: () => null,
+                    //     icon: Icon(
+                    //       FlutterRemix.notification_3_line,
+                    //       color: Colors.white,
+                    //     ))
                   ],
                 ),
               ),

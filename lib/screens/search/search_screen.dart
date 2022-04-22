@@ -15,58 +15,64 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
-    return BlocProvider(
-        create: (context) => SearchCubit(EventsRepo()),
-        child: Scaffold(
-            backgroundColor: ThemeColors.primaryBlue,
-            body: SafeArea(
-                child: Column(children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  left: w * 0.02,
-                  top: h * 0.01,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, "/");
+        return false;
+      },
+      child: BlocProvider(
+          create: (context) => SearchCubit(EventsRepo()),
+          child: Scaffold(
+              backgroundColor: ThemeColors.primaryBlue,
+              body: SafeArea(
+                  child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: w * 0.02,
+                    top: h * 0.01,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () =>
+                            Navigator.pushReplacementNamed(context, "/"),
+                        icon: Icon(
+                          FlutterRemix.arrow_left_s_line,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () =>
-                          Navigator.pushReplacementNamed(context, "/"),
-                      icon: Icon(
-                        FlutterRemix.arrow_left_s_line,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
+                Center(
+                  child: Image.asset(
+                    "assets/img/logo_big.png",
+                    height: h * 0.15,
+                  ),
                 ),
-              ),
-              Center(
-                child: Image.asset(
-                  "assets/img/logo_big.png",
-                  height: h * 0.15,
+                Expanded(
+                  child: BlocBuilder<SearchCubit, SearchState>(
+                    builder: (context, state) {
+                      if (state is SearchInitial) {
+                        context.read<SearchCubit>().onSearchQueryChange("");
+                        return LoadingScreen(
+                          withScaffold: false,
+                        );
+                      } else if (state is SearchLoadingState) {
+                        return LoadingScreen(
+                          withScaffold: false,
+                        );
+                      } else if (state is SearchLoadedState) {
+                        return _buildSerachView(context, state, w, h);
+                      } else {
+                        return ErrorScreen(
+                            errorMessage: "Napak, še sam ne vem kakšna");
+                      }
+                    },
+                  ),
                 ),
-              ),
-              Expanded(
-                child: BlocBuilder<SearchCubit, SearchState>(
-                  builder: (context, state) {
-                    if (state is SearchInitial) {
-                      context.read<SearchCubit>().onSearchQueryChange("");
-                      return LoadingScreen(
-                        withScaffold: false,
-                      );
-                    } else if (state is SearchLoadingState) {
-                      return LoadingScreen(
-                        withScaffold: false,
-                      );
-                    } else if (state is SearchLoadedState) {
-                      return _buildSerachView(context, state, w, h);
-                    } else {
-                      return ErrorScreen(
-                          errorMessage: "Napak, še sam ne vem kakšna");
-                    }
-                  },
-                ),
-              ),
-            ]))));
+              ])))),
+    );
   }
 
   Widget _buildSerachView(

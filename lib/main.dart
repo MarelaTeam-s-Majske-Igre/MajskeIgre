@@ -9,8 +9,10 @@ import 'package:app/screens/home/home_screen.dart';
 import 'package:app/screens/search/search_screen.dart';
 import 'package:app/services/firebase/fcm.dart';
 import 'package:app/services/global/global_context.dart';
+import 'package:app/services/update/update_app_bloc.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
@@ -43,7 +45,27 @@ class MyApp extends StatelessWidget {
         '/about': (context) => AboutAppScreen(),
         '/search': (context) => SearchScreen(),
       },
-      home: HomeScreen(),
+      home: BlocProvider(
+        create: (context) => UpdateAppBloc(),
+        child: BlocBuilder<UpdateAppBloc, UpdateAppState>(
+          builder: (context, state) {
+            if (state is UpdateAppInitial || state is CheckingForUpdateState) {
+              if (state is UpdateAppInitial) {
+                context.read<UpdateAppBloc>().add(CheckForUpdateEvent());
+              }
+              return LoadingScreen(
+                loadingText: "Pridobivanje podatkov o posodobitvah",
+              );
+            } else if (state is UpdatingAppState) {
+              return LoadingScreen(
+                loadingText: "Posodabljanje aplikacije",
+              );
+            } else {
+              return HomeScreen();
+            }
+          },
+        ),
+      ),
     );
   }
 }
