@@ -8,6 +8,7 @@ import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/drawer/app_drawer.dart';
 import 'package:app/screens/home/cubit/home_screen_cubit.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is HomeScreenInitial) {
             context.read<HomeScreenCubit>().loadData();
+            PlausibleAnalitics.logEvent();
             return LoadingScreen();
           } else if (state is HomeScreenLoadingState) {
             return LoadingScreen();
