@@ -6,6 +6,8 @@ import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/event/sport_event/sport_cubit/sport_detail_cubit.dart';
 import 'package:app/services/firebase/push_notification_bloc/push_notification_bloc.dart';
+import 'package:app/services/global/launch_link.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +32,9 @@ class SportEventDetailScreen extends StatelessWidget {
       child: BlocBuilder<SportDetailCubit, SportDetailState>(
         builder: (context, state) {
           if (state is SportDetailInitial) {
-            context.read<SportDetailCubit>().loadEvent(arguments['id']);
+            final id = arguments['id'];
+            context.read<SportDetailCubit>().loadEvent(id);
+            PlausibleAnalitics.logEvent("sport/$id");
             return LoadingScreen();
           } else if (state is SportDetailLoadingState) {
             return LoadingScreen();
@@ -151,7 +155,7 @@ class SportEventDetailScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => launch(event.registrationLink!),
+                            onTap: () => LaunchLink.open(event.registrationLink!, event.registrationLink!, "/sport"),
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: h * 0.01),
                               child: Row(

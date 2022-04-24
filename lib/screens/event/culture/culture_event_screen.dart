@@ -6,6 +6,8 @@ import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/event/culture/cubit/culture_detail_cubit.dart';
 import 'package:app/services/firebase/push_notification_bloc/push_notification_bloc.dart';
+import 'package:app/services/global/launch_link.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,10 +15,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_remix/flutter_remix.dart';
 import 'package:intl/intl.dart';
 import 'package:app/extensions/capitalize.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CultureEventDetailScreen extends StatelessWidget {
-  const CultureEventDetailScreen({Key? key}) : super(key: key);
+  CultureEventDetailScreen({Key? key}) : super(key: key);
+  int? id;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,9 @@ class CultureEventDetailScreen extends StatelessWidget {
       child: BlocBuilder<CultureDetailCubit, CultureDetailState>(
         builder: (context, state) {
           if (state is CultureDetailInitial) {
-            context.read<CultureDetailCubit>().loadEvent(arguments['id']);
+            id = arguments['id'];
+            context.read<CultureDetailCubit>().loadEvent(id!);
+            PlausibleAnalitics.logEvent("culture/$id");
             return LoadingScreen();
           } else if (state is CultureDetailLoadingState) {
             return LoadingScreen();
@@ -78,7 +82,7 @@ class CultureEventDetailScreen extends StatelessWidget {
                                 child: Html(
                                   data: p,
                                   onLinkTap: (url, _, __, ___) =>
-                                      url != null ? launch(url) : null,
+                                      url != null ? LaunchLink.open(url, "DescriptionLink", "/culture/$id") : null,
                                   style: {
                                     "body": Style.fromTextStyle(
                                       TextStyle(

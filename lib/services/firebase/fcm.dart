@@ -49,7 +49,7 @@ Future<void> notificationSetup() async {
   });
 
   var notificationRepo = NotificationRepo();
-  await notificationRepo.login();
+  notificationRepo.login();
 }
 
 void _showNotification(String title, String content, String payload) =>

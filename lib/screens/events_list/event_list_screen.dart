@@ -6,6 +6,7 @@ import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/events_list/calendar_view.dart';
 import 'package:app/screens/events_list/cubit/event_list_cubit.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:app/widgets/event_card.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class EventListScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is EventListInitial) {
             context.read<EventListCubit>().loadData();
+            PlausibleAnalitics.logEvent("events");
             return LoadingScreen();
           } else if (state is EventListLoadingState) {
             return LoadingScreen();
@@ -170,17 +172,17 @@ class EventListScreen extends StatelessWidget {
     ];
 
     widgets.addAll(
-      EventCardListModel.fromRepo([day]).events.map((e) => EventCard(
-            title: e.title,
-            location: e.location,
-            time: e.startTime,
-            eventType: e.type,
-            onClick: () => e.onClick(context),
-          ))
-          .toList()
-        ,
+      EventCardListModel.fromRepo([day])
+          .events
+          .map((e) => EventCard(
+                title: e.title,
+                location: e.location,
+                time: e.startTime,
+                eventType: e.type,
+                onClick: () => e.onClick(context),
+              ))
+          .toList(),
     );
-
 
     return widgets;
   }

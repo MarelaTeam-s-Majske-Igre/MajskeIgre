@@ -1,6 +1,5 @@
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String errorMessage;

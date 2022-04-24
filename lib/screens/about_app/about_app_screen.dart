@@ -1,10 +1,13 @@
+import 'package:app/services/global/launch_link.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AboutAppScreen extends StatelessWidget {
-  const AboutAppScreen({Key? key}) : super(key: key);
+  AboutAppScreen({Key? key}) : super(key: key) {
+    PlausibleAnalitics.logEvent("about");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,32 +74,34 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
                         color: Colors.white,
                         width: w * 0.45,
                       ),
-                      // Text(
-                      //   "jakob.marusic@student.uni-lj.si",
-                      //   style: TextStyle(
-                      //       fontStyle: FontStyle.italic,
-                      //       color: Colors.white,
-                      //       fontSize: 12),
-                      // ),
                       Row(
                         children: [
                           IconButton(
-                              onPressed: () =>
-                                  launch("https://jakob.marela.team"),
+                              onPressed: () => LaunchLink.open(
+                                    "https://jakob.marela.team",
+                                    "Jakobov spletni domek",
+                                    "/about",
+                                  ),
                               icon: Icon(
                                 FlutterRemix.home_2_fill,
                                 color: Colors.white,
                               )),
                           IconButton(
-                              onPressed: () => launch(
-                                  "mailto:jakob.marusic@student.uni-lj.si"),
+                              onPressed: () => LaunchLink.open(
+                                    "mailto:jakob.marusic@student.uni-lj.si",
+                                    "Mail",
+                                    "/about",
+                                  ),
                               icon: Icon(
                                 FlutterRemix.message_2_fill,
                                 color: Colors.white,
                               )),
                           IconButton(
-                              onPressed: () =>
-                                  launch("https://github.com/jakmar17"),
+                              onPressed: () => LaunchLink.open(
+                                    "https://github.com/jakmar17",
+                                    "GitHub",
+                                    "/about",
+                                  ),
                               icon: Icon(
                                 FlutterRemix.github_fill,
                                 color: Colors.white,
@@ -149,16 +154,22 @@ Aplikacije je odprtokodna, koda je na voljo na GitHub profilu razvijalca.
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () => launch(
-                              "https://play.google.com/store/apps/details?id=team.marela.mojstudent.moj_student"),
+                          onPressed: () => LaunchLink.open(
+                            "https://play.google.com/store/apps/details?id=team.marela.mojstudent.moj_student",
+                            "GooglePlay",
+                            "/about",
+                          ),
                           icon: Icon(
                             FlutterRemix.google_play_fill,
                             color: Colors.white,
                           ),
                         ),
                         IconButton(
-                          onPressed: () =>
-                              launch("https://mojstudent.marela.team"),
+                          onPressed: () => LaunchLink.open(
+                            "https://mojstudent.marela.team",
+                            "MojStudent",
+                            "/about",
+                          ),
                           icon: Icon(
                             FlutterRemix.home_2_fill,
                             color: Colors.white,

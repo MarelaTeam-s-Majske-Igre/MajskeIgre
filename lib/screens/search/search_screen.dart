@@ -2,6 +2,7 @@ import 'package:app/data/events/events_repo.dart';
 import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/search/cubit/search_cubit.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:app/widgets/event_card.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,7 @@ class SearchScreen extends StatelessWidget {
                     builder: (context, state) {
                       if (state is SearchInitial) {
                         context.read<SearchCubit>().onSearchQueryChange("");
+                        PlausibleAnalitics.logEvent("search");
                         return LoadingScreen(
                           withScaffold: false,
                         );

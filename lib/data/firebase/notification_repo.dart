@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:app/data/interceptors/fcm_token_interceptor.dart';
 import 'package:app/data/repo_consts.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:http/http.dart';
 import 'package:http_interceptor/http/http.dart';
 
 class NotificationRepo {
@@ -31,18 +29,29 @@ class NotificationRepo {
     token ??= await getFcmToken();
     Map<String, String> headers = {
       'Content-type': 'application/json',
-      'Content-Length': utf8.encode(token).length.toString()
+      'FCM-token': token
     };
 
     try {
-      final response = await client.post(Uri.parse(baseUrl + "login"),
-          body: utf8.encode(token), headers: headers);
+      var response =
+          await client.post(Uri.parse(baseUrl + "login"), headers: headers);
+
+      while (response.statusCode == 308) {
+        if (response.headers.containsKey("location")) {
+          response = await client.post(
+            Uri.parse(response.headers["location"]!),
+            headers: headers,
+          );
+        }
+      }
 
       if (response.statusCode == 200) {
       } else {
         throw Exception();
       }
-    } on Exception {}
+    } catch (e) {
+      var x = e;
+    }
   }
 
   Future<bool> subscribeToSportNotification(int eventId) async {

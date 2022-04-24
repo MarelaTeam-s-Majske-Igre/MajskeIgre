@@ -2,6 +2,7 @@ import 'package:app/data/events/events_repo.dart';
 import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/event/concert_event/cubit/concert_detail_cubit.dart';
+import 'package:app/services/stats/plausible_analitics.dart';
 import 'package:app/style/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,9 @@ class FunEventDetailScreen extends StatelessWidget {
       child: BlocBuilder<ConcertDetailCubit, ConcertDetailState>(
         builder: (context, state) {
           if (state is ConcertDetailInitial) {
-            context.read<ConcertDetailCubit>().loadEvent(arguments['id']);
+            final id = arguments['id'];
+            PlausibleAnalitics.logEvent("concert/$id");
+            context.read<ConcertDetailCubit>().loadEvent(id);
             return LoadingScreen();
           } else if (state is ConcertDetailLoadingState) {
             return LoadingScreen();

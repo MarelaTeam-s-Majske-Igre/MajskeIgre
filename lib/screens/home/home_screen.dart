@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is HomeScreenInitial) {
             context.read<HomeScreenCubit>().loadData();
-            PlausibleAnalitics.logEvent();
+            PlausibleAnalitics.logEvent("");
             return LoadingScreen();
           } else if (state is HomeScreenLoadingState) {
             return LoadingScreen();

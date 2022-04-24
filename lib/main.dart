@@ -1,5 +1,4 @@
 import 'package:app/screens/about_app/about_app_screen.dart';
-import 'package:app/screens/cubit_screens/error_screen.dart';
 import 'package:app/screens/cubit_screens/loading_screen.dart';
 import 'package:app/screens/event/culture/culture_event_screen.dart';
 import 'package:app/screens/event/concert_event/fun_event_screen.dart';
